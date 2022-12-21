@@ -9,25 +9,34 @@ class SearchEngine
 
   public function search(string $text): array
   {
-    $textTerm = normalize($text);
+    $textTerms = Str::of($text)->explode((' '))->map('normalize')->filter()->values();
     return collect($this->docs)
-      ->map(function ($doc) use ($textTerm) {
+      ->map(function ($doc) use ($textTerms) {
         $terms = Str::of($doc['text'])
           ->explode(' ')
           ->map(fn($token) => normalize($token))
-          ->filter(fn($term) => $term === $textTerm);
+          ->filter()
+          ->values();
 
         return [
           ...$doc,
           'terms' => $terms->toArray(),
-          'termsCount' => $terms->count(),
         ];
       })
-      ->filter(function ($doc) {
+      ->map(function ($doc) use ($textTerms) {
+        $matchedTerms = $textTerms->intersect($doc['terms']);
+        $countsbyMatches = collect($doc['terms'])->countBy()->only($matchedTerms);
 
-        return $doc['termsCount'] !== 0;
+        return [
+          ...$doc,
+          'matchedTermsCount' => $matchedTerms->count(),
+          'sumOfMatches' => $countsbyMatches->sum(),
+        ];
       })
-      ->sortByDesc('termsCount')
+      ->filter(fn($doc) => $doc['matchedTermsCount'] !== 0)
+      ->sortBy([['matchedTermsCount', 'desc'], ['sumOfMatches', 'desc']
+      ])
+      // ->each(fn($doc) => dump($doc))
       ->pluck('id')
       ->values()
       ->toArray();
