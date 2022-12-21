@@ -1,0 +1,10 @@
+{
+    "name": "feycot/search-engine",
+    "authors": [
+        {
+            "name": "feycot",
+            "email": "feycot@gmail.com"
+        }
+    ],
+    "require": {}
+}
