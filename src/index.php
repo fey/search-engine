@@ -9,14 +9,25 @@ class SearchEngine
 
   public function search(string $text): array
   {
+    $textTerm = normalize($text);
     return collect($this->docs)
-      ->filter(function ($doc) use ($text) {
+      ->map(function ($doc) use ($textTerm) {
         $terms = Str::of($doc['text'])
           ->explode(' ')
-          ->map(fn($token) => normalize($token));
+          ->map(fn($token) => normalize($token))
+          ->filter(fn($term) => $term === $textTerm);
 
-        return $terms->contains(normalize($text));
+        return [
+          ...$doc,
+          'terms' => $terms->toArray(),
+          'termsCount' => $terms->count(),
+        ];
       })
+      ->filter(function ($doc) {
+
+        return $doc['termsCount'] !== 0;
+      })
+      ->sortByDesc('termsCount')
       ->pluck('id')
       ->values()
       ->toArray();

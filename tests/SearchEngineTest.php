@@ -18,7 +18,7 @@ final class SearchEngineTest extends TestCase
     ];
     $searchEngine = buildSearchEngine($docs);
 
-    $this->assertSame(['doc1', 'doc2'], $searchEngine->search('shoot'));
+    $this->assertSame(['doc2', 'doc1'], $searchEngine->search('shoot'));
   }
 
   public function testSearch2(): void
