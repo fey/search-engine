@@ -11,7 +11,7 @@ class SearchEngine
   {
     $textTerms = Str::of($text)->explode((' '))->map('normalize')->filter()->values();
     return collect($this->docs)
-      ->map(function ($doc) use ($textTerms) {
+      ->map(function ($doc) {
         $terms = Str::of($doc['text'])
           ->explode(' ')
           ->map(fn($token) => normalize($token))
@@ -50,7 +50,7 @@ function buildSearchEngine(array $docs)
 
 function normalize(string $token): ?string
 {
-  preg_match('/\w+/', $token, $matches);
-
-  return Str::lower($matches[0]) ?? null;
+  preg_match_all('/\w+/', $token, $matches);
+  $result = collect($matches)->flatten()->first();
+  return is_null($result) ? null : Str::lower($result);
 }
