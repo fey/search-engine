@@ -11,8 +11,11 @@ class SearchEngine
   {
     return collect($this->docs)
       ->filter(function ($doc) use ($text) {
-        $terms = Str::of($doc['text'])->explode(' ');
-        return $terms->map('normalize')->filter();
+        $terms = Str::of($doc['text'])
+          ->explode(' ')
+          ->map(fn($token) => normalize($token));
+
+        return $terms->contains(normalize($text));
       })
       ->pluck('id')
       ->values()

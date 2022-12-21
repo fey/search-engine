@@ -18,7 +18,6 @@ final class SearchEngineTest extends TestCase
     ];
     $searchEngine = buildSearchEngine($docs);
 
-    $this->markTestSkipped();
     $this->assertSame(['doc1', 'doc2'], $searchEngine->search('shoot'));
   }
 
