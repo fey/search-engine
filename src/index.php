@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 
 class SearchEngine
 {
-    private array $index = [];
+    private Collection $index;
 
     public function __construct(array $docs)
     {
@@ -16,8 +16,33 @@ class SearchEngine
 
     public function search(string $text): array
     {
+        $textTerms = Str::of($text)
+            ->explode(' ')
+            ->map('normalize')
+            ->filter();
 
-        return [];
+        $currentIndex = $this->index->only($textTerms);
+
+        $groupByDocId = $currentIndex
+            ->values()
+            ->flatten(1)
+            ->groupBy('docId')
+            ;
+
+        $currentDocsIds = $groupByDocId->keys();
+
+        $weightedDocs = $currentDocsIds
+            ->reduce(function (Collection $acc, string $docId) use ($groupByDocId): Collection {
+                /** @var Collection $values */
+                $values = $groupByDocId->get($docId);
+                $sumIdf = $values->sum('tfIDF');
+
+                return $acc->put($docId, $sumIdf);
+            }, collect([]));
+
+        return $currentDocsIds->sort(function ($docId2, $docId1) use ($weightedDocs) {
+            return $weightedDocs->get($docId1) <=> $weightedDocs->get($docId2);
+        })->values()->toArray();
     }
 
     private function buildIndex(array $docs): Collection
@@ -48,7 +73,9 @@ class SearchEngine
 
             $keys->each(function ($term) use ($acc, $docTerms) {
                 if ($acc->has($term)) {
-                    $acc[$term] = array_merge($acc[$term], [$docTerms[$term]]);
+                    /** @var Collection $termDocs */
+                    $termDocs = $acc[$term];
+                    $acc[$term] = [...$termDocs, $docTerms[$term]];
                 } else {
                     $acc[$term] = [$docTerms[$term]];
                 }
@@ -69,8 +96,6 @@ class SearchEngine
                 });
         });
 
-        dump($index);
-
         return $index;
     }
 }
@@ -90,7 +115,6 @@ function normalize(string $token): ?string
 
 function calcIDF(int $docsCount, int $termCount): float
 {
-    dump("$docsCount, $termCount");
     $num = 1 + ($docsCount - $termCount + 1) / ($termCount + 0.50);
 
     return log($num, 2 );

@@ -40,7 +40,7 @@ final class SearchEngineTest extends TestCase
         ];
         $searchEngine = buildSearchEngine($docs);
         $actual = $searchEngine->search('shoot at me');
-        echo json_encode($actual, JSON_PRETTY_PRINT);
-        // $this->assertSame(['doc2', 'doc1'], $searchEngine->search('shoot at me'));
+
+        $this->assertSame(['doc2', 'doc1'], $actual);
     }
 }
