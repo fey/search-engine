@@ -8,7 +8,6 @@ use function buildSearchEngine;
 
 final class FinalSearchTest extends TestCase
 {
-
   // public function testSearch(): void
   // {
   //   $searchText = 'trash island';
@@ -46,35 +45,35 @@ final class FinalSearchTest extends TestCase
   //   $this->assertSame($expected, $searchEngine->search($searchText));
   // }
 
-  public function testSearchEmpty(): void
-  {
-    $searchText = '';
-    $docs = [];
-    $searchEngine = buildSearchEngine($docs);
-    $expected = [];
+    // public function testSearchEmpty(): void
+    // {
+    //     $searchText = '';
+    //     $docs = [];
+    //     $searchEngine = buildSearchEngine($docs);
+    //     $expected = [];
 
-    $this->assertSame($expected, $searchEngine->search($searchText));
-  }
+    //     $this->assertSame($expected, $searchEngine->search($searchText));
+    // }
 
 
-  public function testSearchShortStrings(): void
-  {
-    $doc1 = "I can't shoot straight unless I've had a pint!";
-    $doc2 = "Don't shoot shoot shoot that thing at me.";
-    $doc3 = "I'm your shooter.";
-    $docs = [
-      ['id' => 'doc1', 'text' => $doc1],
-      ['id' => 'doc2', 'text' => $doc2],
-      ['id' => 'doc3', 'text' => $doc3],
-    ];
-    $searchEngine = buildSearchEngine($docs);
-    $expected = ['doc2', 'doc1'];
+    // public function testSearchShortStrings(): void
+    // {
+    //     $doc1 = "I can't shoot straight unless I've had a pint!";
+    //     $doc2 = "Don't shoot shoot shoot that thing at me.";
+    //     $doc3 = "I'm your shooter.";
+    //     $docs = [
+    //         ['id' => 'doc1', 'text' => $doc1],
+    //         ['id' => 'doc2', 'text' => $doc2],
+    //         ['id' => 'doc3', 'text' => $doc3],
+    //     ];
+    //     $searchEngine = buildSearchEngine($docs);
+    //     $expected = ['doc2', 'doc1'];
 
-    $this->assertSame($expected, $searchEngine->search('shoot at me, nerd'));
-  }
+    //     $this->assertSame($expected, $searchEngine->search('shoot at me, nerd'));
+    // }
 
-  private function readFixture($name): string
-  {
-    return file_get_contents(implode('/', [__DIR__, 'fixtures', $name]));
-  }
+    // private function readFixture($name): string
+    // {
+    //     return file_get_contents(implode('/', [__DIR__, 'fixtures', $name]));
+    // }
 }
