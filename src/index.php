@@ -40,8 +40,6 @@ class SearchEngine
                 return $acc->put($docId, $sumIdf);
             }, collect([]));
 
-        dump($weightedDocs);
-
         return $currentDocsIds->sort(function ($docId2, $docId1) use ($weightedDocs) {
             return $weightedDocs->get($docId1) <=> $weightedDocs->get($docId2);
         })->values()->toArray();
