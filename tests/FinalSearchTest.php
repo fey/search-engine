@@ -8,42 +8,40 @@ use function buildSearchEngine;
 
 final class FinalSearchTest extends TestCase
 {
-  public function testSearch(): void
-  {
-    $searchText = 'trash island';
-    $docs = collect([
-      ['id' => 'garbage_patch_NG'],
-      ['id' => 'garbage_patch_ocean_clean'],
-      ['id' => 'garbage_patch_wiki'],
-    ])
-      ->map(function ($doc) {
-        return [
-          ...$doc,
-          'text' => $this->readFixture($doc['id']),
-        ];
-      });
-    $searchEngine = buildSearchEngine($docs->toArray());
-    $expected = $docs->pluck('id')->toArray();
+    public function testSearch(): void
+    {
+        $searchText = 'trash island';
+        $docs = collect([
+        ['id' => 'garbage_patch_NG'],
+        ['id' => 'garbage_patch_ocean_clean'],
+        ['id' => 'garbage_patch_wiki'],
+        ])
+        ->map(function ($doc) {
+            return [
+            ...$doc,
+            'text' => $this->readFixture($doc['id']),
+            ];
+        });
+        $searchEngine = buildSearchEngine($docs->toArray());
+        $expected = $docs->pluck('id')->toArray();
 
-    $this->assertSame($expected, $searchEngine->search($searchText));
-  }
+        $this->assertSame($expected, $searchEngine->search($searchText));
+    }
 
-  public function testSearchWithSpam(): void
-  {
-    $searchText = 'trash island';
-    $docs = collect([
-      ['id' => 'garbage_patch_NG'],
-      ['id' => 'garbage_patch_ocean_clean'],
-      ['id' => 'garbage_patch_wiki'],
-      ['id' => 'garbage_patch_spam'],
-    ])
-      ->map(fn ($doc) => [...$doc, 'text' => $this->readFixture($doc['id'])]
-      );
-    $searchEngine = buildSearchEngine($docs->toArray());
-    $expected = $docs->pluck('id')->toArray();
+    public function testSearchWithSpam(): void
+    {
+        $searchText = 'trash island';
+        $docs = collect([
+            ['id' => 'garbage_patch_NG'],
+            ['id' => 'garbage_patch_ocean_clean'],
+            ['id' => 'garbage_patch_wiki'],
+            ['id' => 'garbage_patch_spam'],
+        ])->map(fn ($doc) => [...$doc, 'text' => $this->readFixture($doc['id'])]);
+        $searchEngine = buildSearchEngine($docs->toArray());
+        $expected = $docs->pluck('id')->toArray();
 
-    $this->assertSame($expected, $searchEngine->search($searchText));
-  }
+        $this->assertSame($expected, $searchEngine->search($searchText));
+    }
 
     public function testSearchEmpty(): void
     {

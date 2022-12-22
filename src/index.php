@@ -115,9 +115,9 @@ function normalize(string $token): ?string
     return is_null($result) ? null : Str::lower($result);
 }
 
-function calcIDF(int $docsCount, int $termCount): float
+function calcIDF(int $docsCount, int $termDocsCount): float
 {
-    $num = 1 + ($docsCount - $termCount + 1) / ($termCount + 0.50);
+    $num = 1 + ($docsCount - $termDocsCount + 1) / ($termDocsCount + 0.50);
 
-    return log($num, 2 );
+    return log($num, 2);
 }
