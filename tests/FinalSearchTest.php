@@ -30,7 +30,7 @@ final class FinalSearchTest extends TestCase
 
     public function testSearchWithSpam(): void
     {
-        $searchText = 'trash island';
+        $searchText = 'the trash island is a';
         $docs = collect([
             ['id' => 'garbage_patch_NG'],
             ['id' => 'garbage_patch_ocean_clean'],
